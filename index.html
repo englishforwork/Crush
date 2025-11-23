@@ -24,7 +24,6 @@
             padding: 25px;
             border-radius: 0;
             backdrop-filter: blur(10px);
-            box-shadow: none;
         }
         h1 {
             font-size: 2.2em;
@@ -78,16 +77,55 @@
         <div id="resultat"></div>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
+
     <script>
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC_zVwlLpnggBW6xOioy8Leynr85tsQr3M",
+            authDomain: "crush-90b60.firebaseapp.com",
+            databaseURL: "https://crush-90b60-default-rtdb.firebaseio.com",
+            projectId: "crush-90b60",
+            storageBucket: "crush-90b60.firebasestorage.app",
+            messagingSenderId: "478085861894",
+            appId: "1:478085861894:web:d74326f0c3612e6106e987",
+            measurementId: "G-02KSHB50HD"
+        };
+
+        // Initialisation Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        function envoyerDansFirebase(n1, n2, pourcentage) {
+            const ref = database.ref("loveTests");
+
+            const data = {
+                nom1: n1,
+                nom2: n2,
+                resultat: pourcentage + "%",
+                date: new Date().toLocaleString()
+            };
+
+            ref.push(data);
+        }
+
         function calculerLove() {
             const n1 = document.getElementById("nom1").value.trim();
             const n2 = document.getElementById("nom2").value.trim();
+
             if (!n1 || !n2) {
                 document.getElementById("resultat").innerHTML = "Veuillez entrer deux prénoms ✨";
                 return;
             }
+
             const pourcentage = Math.floor(Math.random() * 51) + 50;
-            document.getElementById("resultat").innerHTML = `Compatibilité : ${pourcentage}% ❤️`;
+            document.getElementById("resultat").innerHTML =
+                `Compatibilité : ${pourcentage}% ❤️`;
+
+            // 🔥 Envoi dans Firebase
+            envoyerDansFirebase(n1, n2, pourcentage);
         }
     </script>
 </body>
