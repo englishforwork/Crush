@@ -77,12 +77,11 @@
         <div id="resultat"></div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
+    <!-- Firebase SDK pour Firebase 9 modulaire -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
 
-    <script>
-        // Configuration Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyC_zVwlLpnggBW6xOioy8Leynr85tsQr3M",
             authDomain: "crush-90b60.firebaseapp.com",
@@ -94,24 +93,20 @@
             measurementId: "G-02KSHB50HD"
         };
 
-        // Initialisation Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
 
         function envoyerDansFirebase(n1, n2, pourcentage) {
-            const ref = database.ref("loveTests");
-
-            const data = {
+            const reference = ref(database, "loveTests");
+            push(reference, {
                 nom1: n1,
                 nom2: n2,
                 resultat: pourcentage + "%",
                 date: new Date().toLocaleString()
-            };
-
-            ref.push(data);
+            });
         }
 
-        function calculerLove() {
+        window.calculerLove = function() {
             const n1 = document.getElementById("nom1").value.trim();
             const n2 = document.getElementById("nom2").value.trim();
 
@@ -124,10 +119,8 @@
             document.getElementById("resultat").innerHTML =
                 `Compatibilité : ${pourcentage}% ❤️`;
 
-            // 🔥 Envoi dans Firebase
             envoyerDansFirebase(n1, n2, pourcentage);
-        }
+        };
     </script>
 </body>
 </html>
-
